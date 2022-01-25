@@ -122,7 +122,6 @@ import fmlLibsMapping from '../../app/desktop/utils/fmllibs';
 import { openModal, closeModal } from './modals/actions';
 import forgePatcher from '../utils/forgePatcher';
 
-
 export function initManifests() {
   return async (dispatch, getState) => {
     const { app } = getState();
