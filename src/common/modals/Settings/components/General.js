@@ -28,7 +28,7 @@ import {
 } from '../../../utils/selectors';
 import {
   updateDiscordRPC,
-  updateHideAds,
+  // updateHideAds,
   updateHideWindowOnGameLaunch,
   updatePotatoPcMode,
   updateInstanceSortType,
@@ -164,7 +164,7 @@ const General = () => {
   const updateAvailable = useSelector(state => state.updateAvailable);
   const showNews = useSelector(state => state.settings.showNews);
   const DiscordRPC = useSelector(state => state.settings.discordRPC);
-  const HideAds = useSelector(state => state.settings.hideAds);
+  // const HideAds = useSelector(state => state.settings.hideAds);
   const potatoPcMode = useSelector(state => state.settings.potatoPcMode);
   const concurrentDownloads = useSelector(
     state => state.settings.concurrentDownloads
