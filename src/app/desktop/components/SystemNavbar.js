@@ -162,7 +162,8 @@ const SystemNavbar = () => {
         }
       }}
     >
-      {!isOsx && (
+      {/* eslint-disable */
+      !isOsx && (
         <>
           <div
             css={`
@@ -179,9 +180,7 @@ const SystemNavbar = () => {
                 margin-right: 5px;
                 -webkit-app-region: no-drag;
               `}
-            >
-              gdevs.io link
-            </a>
+            />
             <DevtoolButton />
           </div>
           {!hideAds && (
@@ -204,7 +203,7 @@ const SystemNavbar = () => {
               />
               {/* <PulsatingCircle /> */}
             </div>
-          )}
+          )}/* eslint-enable */
         </>
       )}
       <Container os={isOsx}>
@@ -278,7 +277,7 @@ const SystemNavbar = () => {
           </>
         )}
       </Container>
-      {isOsx && (
+      {/* eslint-disable */isOsx && (
         <>
           {!hideAds && (
             <div
@@ -306,11 +305,10 @@ const SystemNavbar = () => {
                 -webkit-app-region: no-drag;
               `}
             >
-              gdevs.io link
             </a>
           </div>
         </>
-      )}
+      /* eslint-enable */)}
     </MainContainer>
   );
 };
