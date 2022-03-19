@@ -65,6 +65,7 @@ function DesktopRoot({ store }) {
   // const modals = useSelector(state => state.modals);
   const shouldShowDiscordRPC = useSelector(state => state.settings.discordRPC);
   // const [contentStyle, setContentStyle] = useState({ transform: 'scale(1)' });
+  const offlineMode = useSelector(state => state.settings.offlineMode);
 
   message.config({
     top: 45,
@@ -126,7 +127,7 @@ function DesktopRoot({ store }) {
       });
     }
 
-    if (process.env.NODE_ENV === 'development' && currentAccount) {
+    if ((process.env.NODE_ENV === 'development' || offlineMode) && currentAccount) {
       dispatch(received(features.mcAuthentication));
       dispatch(push('/home'));
     } else if (currentAccount) {

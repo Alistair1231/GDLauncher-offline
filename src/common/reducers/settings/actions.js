@@ -129,6 +129,15 @@ export function updateHideAds(val) {
   };
 }
 
+export function updateOfflineMode(val) {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.UPDATE_OFFLINE_MODE,
+      val
+    });
+  };
+}
+
 export function updateCurseReleaseChannel(curseReleaseChannel) {
   return dispatch => {
     dispatch({

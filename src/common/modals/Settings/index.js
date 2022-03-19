@@ -1,7 +1,7 @@
 import React, { useState, lazy } from 'react';
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../../components/Modal';
 import AsyncComponent from '../../components/AsyncComponent';
 import CloseButton from '../../components/CloseButton';
@@ -100,6 +100,8 @@ const pages = {
 
 export default function Settings() {
   const [page, setPage] = useState('General');
+  const hideAds = useSelector(state => state.settings.hideAds);
+
   const dispatch = useDispatch();
   const ContentComponent = pages[page].component;
 
@@ -137,6 +139,7 @@ export default function Settings() {
           <SettingsTitle>Game Settings</SettingsTitle>
           <SettingsButton>Graphic Settings</SettingsButton>
           <SettingsButton>Sound Settings</SettingsButton> */}
+          {!hideAds && (
           <div
             css={`
               align-items: left;
@@ -224,6 +227,7 @@ export default function Settings() {
               </span>
             </div>
           </div>
+          )}
         </SideMenu>
         <SettingsContainer>
           <SettingsColumn>

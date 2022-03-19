@@ -8,7 +8,7 @@ import {
   faArrowRight,
   faExternalLinkAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { Input, Button, Checkbox } from 'antd';
+import { Input, Button, Checkbox, Switch } from 'antd';
 import { useKey } from 'rooks';
 import { login, loginOAuth } from '../../../common/reducers/actions';
 import { load, requesting } from '../../../common/reducers/loading/actions';
@@ -16,6 +16,7 @@ import features from '../../../common/reducers/loading/features';
 import backgroundVideo from '../../../common/assets/background.webm';
 import HorizontalLogo from '../../../ui/HorizontalLogo';
 import { openModal } from '../../../common/reducers/modals/actions';
+import { updateOfflineMode } from '../../../common/reducers/settings/actions';
 
 const LoginButton = styled(Button)`
   border-radius: 4px;
@@ -144,9 +145,11 @@ const LoginFailMessage = styled.div`
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
-  const [offlineMode, setOfflineMode] = useState(false);
+  //const [offlineMode, setOfflineMode] = useState(false);
+  const offlineMode = useSelector(state => state.settings.offlineMode);
+
   const [version, setVersion] = useState(null);
   const [loginFailed, setLoginFailed] = useState(false);
   const loading = useSelector(
@@ -154,13 +157,15 @@ const Login = () => {
   );
 
   const authenticate = () => {
-    if (!email || !password) return;
+    if (!username) return;
+    if (!password && !offlineMode) return;
+
     dispatch(requesting('accountAuthentication'));
     setTimeout(() => {
       dispatch(
         load(
           features.mcAuthentication,
-          dispatch(login(email, password, offlineMode))
+          dispatch(login(username, password, offlineMode))
         )
       ).catch(e => {
         console.error(e);
@@ -200,22 +205,25 @@ const Login = () => {
             <Form>
               <div>
                 <Input
-                  placeholder="Email"
-                  value={email}
-                  onChange={({ target: { value } }) => setEmail(value)}
+                  placeholder={offlineMode ? "Name" : "Email"}
+                  value={username}
+                  onChange={({ target: { value } }) => setUsername(value)}
                 />
               </div>
-              <div>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  value={password}
-                  onChange={({ target: { value } }) => setPassword(value)}
-                />
-              </div>
-              <Checkbox onChange={mode => setOfflineMode(mode)}>
+              {!offlineMode && (
+                <div>
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    value={password}
+                    onChange={({ target: { value } }) => setPassword(value)}
+                  />
+                </div>
+              )}
+              <Checkbox defaultChecked={offlineMode} onChange={e => dispatch(updateOfflineMode(!offlineMode))}>
                 Offline mode
               </Checkbox>
+
               {loginFailed && (
                 <LoginFailMessage>{loginFailed?.message}</LoginFailMessage>
               )}
@@ -228,19 +236,21 @@ const Login = () => {
                   icon={faArrowRight}
                 />
               </LoginButton>
-              <MicrosoftLoginButton
-                color="primary"
-                onClick={authenticateMicrosoft}
-              >
-                Sign in with Microsoft
-                <FontAwesomeIcon
-                  css={`
-                    margin-left: 6px;
-                  `}
-                  icon={faExternalLinkAlt}
-                />
-              </MicrosoftLoginButton>
-            </Form>
+              {!offlineMode && (
+                <MicrosoftLoginButton
+                  color="primary"
+                  onClick={authenticateMicrosoft}
+                >
+                  Sign in with Microsoft
+                  <FontAwesomeIcon
+                    css={`
+                      margin-left: 6px;
+                    `}
+                    icon={faExternalLinkAlt}
+                  />
+                </MicrosoftLoginButton>
+              )}
+              </Form>
             <Footer>
               <div
                 css={`
