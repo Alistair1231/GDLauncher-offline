@@ -63,6 +63,15 @@ function hideAds(state = true, action) {
   }
 }
 
+function offlineMode(state = true, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_OFFLINE_MODE:
+      return action.val;
+    default:
+      return state;
+  }
+}
+
 function hideWindowOnGameLaunch(state = false, action) {
   switch (action.type) {
     case ActionTypes.HIDE_WINDOW_ON_GAME_LAUNCH:
@@ -156,6 +165,7 @@ export default combineReducers({
   concurrentDownloads,
   discordRPC,
   hideAds,
+  offlineMode,
   hideWindowOnGameLaunch,
   potatoPcMode,
   showNews,

@@ -14,6 +14,7 @@ import omitBy from 'lodash/omitBy';
 import { pipeline } from 'stream';
 import he from 'he';
 import zlib from 'zlib';
+import crypto from 'crypto';
 import lockfile from 'lockfile';
 import omit from 'lodash/omit';
 import Seven from 'node-7z';
@@ -122,6 +123,7 @@ import PromiseQueue from '../../app/desktop/utils/PromiseQueue';
 import fmlLibsMapping from '../../app/desktop/utils/fmllibs';
 import { openModal, closeModal } from './modals/actions';
 import forgePatcher from '../utils/forgePatcher';
+
 
 export function initManifests() {
   return async (dispatch, getState) => {
@@ -418,8 +420,12 @@ export function login(
       app: { isNewUser, clientToken }
     } = getState();
     let data = null;
-    if (!username || !password) {
-      throw new Error('No username or password provided');
+
+    if (!username)
+      throw new Error('No username provided');
+
+    if (!password && !offlineMode) {
+      throw new Error('No password provided');
     }
     try {
       if (!offlineMode) {
@@ -442,15 +448,12 @@ export function login(
         // https://forums.spongepowered.org/t/why-are-the-uuids-changing-in-offline-mode/20237/2
         // how to do it in javascript:
         // https://stackoverflow.com/questions/47505620/javas-uuid-nameuuidfrombytes-to-written-in-javascript
-        /* eslint-disable */
-          const crypto = require('crypto');
-          const md5Bytes = crypto.createHash('md5').update("OfflinePlayer:"+username).digest();
-          md5Bytes[6] &= 0x0f;  /* clear version        */
-          md5Bytes[6] |= 0x30;  /* set to version 3     */
-          md5Bytes[8] &= 0x3f;  /* clear variant        */
-          md5Bytes[8] |= 0x80;  /* set to IETF variant  */
-          let generatedID = md5Bytes.toString('hex');
-        /* eslint-enable */
+        const md5Bytes = crypto.createHash('md5').update("OfflinePlayer:" + username).digest();
+        md5Bytes[6] &= 0x0f;  /* clear version        */
+        md5Bytes[6] |= 0x30;  /* set to version 3     */
+        md5Bytes[8] &= 0x3f;  /* clear variant        */
+        md5Bytes[8] |= 0x80;  /* set to IETF variant  */
+        let generatedID = md5Bytes.toString('hex');
         data = {
           selectedProfile: {
             id: generatedID,
@@ -463,16 +466,21 @@ export function login(
       dispatch(updateAccount(data.selectedProfile.id, data));
       dispatch(updateCurrentAccountId(data.selectedProfile.id));
 
-      if (!isNewUser) {
-        if (redirect) {
-          dispatch(push('/home'));
-        }
-      } else {
-        dispatch(updateIsNewUser(false));
-        if (redirect) {
-          dispatch(push('/onboarding'));
-        }
+
+      if (redirect) {
+        dispatch(push('/home'));
       }
+
+      // if (!isNewUser) {
+      //   if (redirect) {
+      //     dispatch(push('/home'));
+      //   }
+      // } else {
+      //   dispatch(updateIsNewUser(false));
+      //   if (redirect) {
+      //     dispatch(push('/onboarding'));
+      //   }
+      // }
     } catch (err) {
       console.error(err);
       throw new Error(err);

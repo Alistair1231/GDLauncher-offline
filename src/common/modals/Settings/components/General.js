@@ -16,7 +16,8 @@ import {
   faNewspaper,
   faFolder,
   faFire,
-  faSort
+  faSort,
+  faAd
 } from '@fortawesome/free-solid-svg-icons';
 import { Select, Tooltip, Button, Switch, Input, Checkbox } from 'antd';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
@@ -437,7 +438,22 @@ const General = () => {
           }}
           checked={DiscordRPC}
         />
+      
+      
       </Content>
+      <Title>
+      Hide ADs &nbsp; <FontAwesomeIcon icon={faAd} />
+      </Title>
+      <Content>
+        <p>Hide / enable ads (top banner)</p>
+        <Switch
+          onChange={e => {
+            dispatch(updateHideAds(e));
+          }}
+          checked={HideAds}
+        />
+      </Content>
+
       <Title>
         Minecraft News &nbsp; <FontAwesomeIcon icon={faNewspaper} />
       </Title>

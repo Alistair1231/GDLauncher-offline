@@ -46,9 +46,12 @@ const DevtoolButton = () => {
 const SettingsButton = () => {
   const dispatch = useDispatch();
 
-  const modals = useSelector(state => state.modals);
+  //const [isMaximized, setIsMaximized] = useState(false);
+  //const isUpdateAvailable = false;
+  //const location = useSelector(state => state.router.location.pathname);
+  //const [isAppImage, setIsAppImage] = useState(false);
 
-  const hideAds = useSelector(state => state.settings.hideAds);
+  const modals = useSelector(state => state.modals);
 
   const areSettingsOpen = modals.find(
     v => v.modalType === 'Settings' && !v.unmounting
@@ -100,31 +103,32 @@ const SystemNavbar = () => {
   const isUpdateAvailable = useSelector(state => state.updateAvailable);
   const location = useSelector(state => state.router.location.pathname);
   const [isAppImage, setIsAppImage] = useState(false);
+  const hideAds = useSelector(state => state.settings.hideAds);
 
-  const checkForUpdates = async () => {
-    const isAppImageVar = await ipcRenderer.invoke('isAppImage');
-    setIsAppImage(isAppImageVar);
-    if (
-      process.env.REACT_APP_RELEASE_TYPE === 'setup' &&
-      (isAppImageVar || process.platform === 'win32')
-    ) {
-      ipcRenderer.invoke('checkForUpdates');
-      ipcRenderer.on('updateAvailable', () => {
-        dispatch(updateUpdateAvailable(true));
-      });
-    } else if (
-      process.platform === 'win32' &&
-      process.env.REACT_APP_RELEASE_TYPE !== 'setup'
-    ) {
-      dispatch(checkForPortableUpdates())
-        .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
-        .catch(console.error);
-    } else {
-      isNewVersionAvailable()
-        .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
-        .catch(console.error);
-    }
-  };
+  // const checkForUpdates = async () => {
+  //   const isAppImageVar = await ipcRenderer.invoke('isAppImage');
+  //   setIsAppImage(isAppImageVar);
+  //   if (
+  //     process.env.REACT_APP_RELEASE_TYPE === 'setup' &&
+  //     (isAppImageVar || process.platform === 'win32')
+  //   ) {
+  //     ipcRenderer.invoke('checkForUpdates');
+  //     ipcRenderer.on('updateAvailable', () => {
+  //       dispatch(updateUpdateAvailable(true));
+  //     });
+  //   } else if (
+  //     process.platform === 'win32' &&
+  //     process.env.REACT_APP_RELEASE_TYPE !== 'setup'
+  //   ) {
+  //     dispatch(checkForPortableUpdates())
+  //       .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
+  //       .catch(console.error);
+  //   } else {
+  //     isNewVersionAvailable()
+  //       .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
+  //       .catch(console.error);
+  //   }
+  // };
 
   useEffect(() => {
     ipcRenderer

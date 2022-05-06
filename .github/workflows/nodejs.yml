@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - nicro-master
       - releases
       - native-refactor
   pull_request:
